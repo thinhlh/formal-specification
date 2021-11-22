@@ -1,6 +1,8 @@
 import 'package:formal_specification/domain/data_type.dart';
 
 extension FSString on String {
+  static const String regexExact = r"\b=\b";
+
   String get reversed {
     String result = '';
     for (String char in this.list.reversed) {
@@ -20,7 +22,12 @@ extension FSString on String {
   }
 
   String removeWhiteSpace() {
-    return this.replaceAll(' ', '');
+    return this.trim().replaceAll(' ', '');
+  }
+
+  /// Replace any equals operator from precondition to equal programming language operators
+  String replaceEquals() {
+    return this.replaceAll(RegExp(regexExact, multiLine: true), '==');
   }
 
   DataType toDataType() {

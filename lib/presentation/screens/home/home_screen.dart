@@ -5,9 +5,22 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
 import 'package:formal_specification/base/base_screen.dart';
+import 'package:formal_specification/domain/parsers/code_generator.dart';
 import 'package:formal_specification/presentation/screens/home/home_controller.dart';
+import 'package:formal_specification/presentation/widgets/code_editor.dart';
+import 'package:formal_specification/presentation/widgets/code_editor_controller.dart';
+import 'package:formal_specification/utils/cli_utils.dart';
+import 'package:formal_specification/utils/colors.dart';
+import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:process_run/shell.dart';
 
 class HomeScreen extends BaseScreen<HomeController> {
+  Process? openTerminal;
+
+  final CodeEditorController codeEditorController =
+      Get.find<CodeEditorController>();
+
   @override
   Widget buildBody(BuildContext context) {
     return Column(
@@ -25,11 +38,60 @@ class HomeScreen extends BaseScreen<HomeController> {
               child: Text('File'),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => {},
               child: Text('Edit'),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                codeEditorController.outputCodeController.text = CodeGenerator(
+                  value: codeEditorController.inputText,
+                ).toDart();
+
+                final path = await getApplicationDocumentsDirectory();
+                final file = File('${path.path}/test.dart');
+                ;
+
+                file
+                    .writeAsString(
+                  codeEditorController.outputCodeController.text,
+                )
+                    .then((value) async {
+                  // openTerminal = await Process.start(
+                  //   // 'osascript',
+                  //   // [
+                  //   //   '-e',
+                  //   //   'tell application "Terminal" to activate',
+                  //   // ],
+                  //   'open',
+                  //   [
+                  //     '-a',
+                  //     'Terminal',
+                  //     '"pwd"',
+                  //   ],
+                  //   runInShell: Platform.isWindows,
+                  // );
+
+                  // final cmd=ProcessCmd(
+                  //   'open',
+                  //   [
+                  //     '-a',
+                  //     'Terminal',
+                  //     '"pwd"',
+                  //   ],
+                  //   runInShell: Platform.isWindows,
+                  // );
+
+                  CLIUtils.executeDartFile(file.path);
+//                   run('''
+
+// osascript -e 'tell app "Terminal"
+//   do script 'dart run ${file.path}'
+// end tell'
+
+// ''');
+                  // openTerminal?.stdin.write('flutter doctor');
+                });
+              },
               child: Text('Generating'),
             ),
             TextButton(
@@ -42,23 +104,35 @@ class HomeScreen extends BaseScreen<HomeController> {
           child: Row(
             children: [
               Expanded(
-                child: TextFormField(
-                  expands: true,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
+                // child: TextFormField(
+                //   controller: controller.inputController,
+                //   expands: true,
+                //   maxLines: null,
+                //   keyboardType: TextInputType.multiline,
+                // ),
+                child: CodeEditor(
+                  isInput: true,
                 ),
               ),
-              VerticalDivider(),
+              Container(
+                height: double.infinity,
+                color: AppColors.background,
+                width: 2,
+              ),
               Expanded(
-                child: Container(
-                  child: TextFormField(
-                    textInputAction: TextInputAction.newline,
-                    keyboardType: TextInputType.multiline,
-                    minLines: null,
-                    maxLines:
-                        null, // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
-                    expands: true,
-                  ),
+                // child: Container(
+                //   child: TextFormField(
+                //     controller: controller.outputController,
+                //     textInputAction: TextInputAction.newline,
+                //     keyboardType: TextInputType.multiline,
+                //     minLines: null,
+                //     maxLines:
+                //         null, // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
+                //     expands: true,
+                //   ),
+                // ),
+                child: CodeEditor(
+                  isInput: false,
                 ),
               ),
             ],
