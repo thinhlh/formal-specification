@@ -35,16 +35,22 @@ class Argument implements Language {
   String get inputConverterInDart {
     switch (dataType) {
       case DataType.NaturalNumber:
-      case DataType.NaturalNumber0:
+
       case DataType.Integer:
-      case DataType.Integer0:
         return '$name = int.tryParse(stdin.readLineSync() ?? "") ?? 0;';
       case DataType.Boolean:
         return '$name = stdin.readlineSync().toString().toLowerCase() == "true";';
       case DataType.String:
         return '$name = stdin.readLineSync().toString();';
+
+      /// TODO Array input
+      case DataType.NaturalNumberArray:
+      case DataType.RealArray:
+      case DataType.IntegerArray:
+        return '';
+
       case DataType.Real:
-      case DataType.Real0:
+        return '';
       default:
         return '$name = double.tryParse(stdin.readLineSync() ?? "") ?? 0;';
     }

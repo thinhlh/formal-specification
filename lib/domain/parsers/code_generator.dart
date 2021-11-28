@@ -2,9 +2,10 @@ import 'package:formal_specification/domain/argument.dart';
 import 'package:formal_specification/domain/languages/lanaguage.dart';
 import 'package:formal_specification/domain/parsers/input_parser.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
+import 'package:formal_specification/domain/parsers/post_condition_parser1.dart';
+import 'package:formal_specification/domain/parsers/post_condition_parser2.dart';
 import 'package:formal_specification/domain/parsers/pre_condition_parser.dart';
 import 'package:formal_specification/domain/string_extension.dart';
-import 'package:formal_specification/utils/string_utils.dart';
 import 'package:formal_specification/utils/values.dart';
 
 class CodeGenerator implements Language {
@@ -15,25 +16,34 @@ class CodeGenerator implements Language {
   CodeGenerator({required String value}) {
     value = _formatInput(value);
 
-    input = InputParser(input: _getFunctionInfoString(value));
-    preCondition = PreConditionParser(input: _getPreConditionString(value));
-    postCondition = PostConditionParser(input: _getPostCondtionString(value));
+    input = _getFunctionInfo(value);
+    preCondition = _getPreCondition(value);
+    postCondition = _getPostCondtion(value);
   }
 
   String _formatInput(String input) {
     return input.removeWhiteSpace().split('\n').join();
   }
 
-  String _getFunctionInfoString(String value) {
-    return value.split('pre').first.removeWhiteSpace();
+  InputParser _getFunctionInfo(String value) {
+    return InputParser(input: value.split('pre').first.removeWhiteSpace());
   }
 
-  String _getPreConditionString(String value) {
-    return value.split('pre').last.split('post').first.removeWhiteSpace();
+  PreConditionParser _getPreCondition(String value) {
+    return PreConditionParser(
+      input: value.split('pre').last.split('post').first.removeWhiteSpace(),
+    );
   }
 
-  String _getPostCondtionString(String value) {
-    return value.split('pre').last.split('post').last.removeWhiteSpace();
+  PostConditionParser _getPostCondtion(String value) {
+    final String output =
+        value.split('pre').last.split('post').last.removeWhiteSpace();
+
+    if (!output.contains('{')) {
+      return PostConditionParserType1(input: output);
+    } else {
+      return PostConditionParserType2(input: output);
+    }
   }
 
   @override

@@ -24,7 +24,7 @@ ${Values.tabs}$falseStatement
 
     final result = '''
 ${Values.tabs}${Values.tabs}${Values.tabs}if ($condition)
-${Values.tabs}${Values.tabs}${Values.tabs}${Values.tabs}${formatAssignee(assignee)}  
+${formatAssignee(assignee)}  
 ''';
 
     return result;
@@ -35,9 +35,9 @@ ${Values.tabs}${Values.tabs}${Values.tabs}${Values.tabs}${formatAssignee(assigne
   }
 
   static String formatAssignee(String assignee) {
-    return assignee
-        .replaceAll(RegExp(r"\bFALSE\b"), 'false')
-        .replaceAll(RegExp(r"\bTRUE\b"), 'true');
+    return '''
+${Values.tabs}${Values.tabs}${Values.tabs}${Values.tabs}${assignee.replaceAll(RegExp(r"\bFALSE\b"), 'false').replaceAll(RegExp(r"\bTRUE\b"), 'true')};
+''';
   }
 
   static String generateTabs(int numberOfTab) {

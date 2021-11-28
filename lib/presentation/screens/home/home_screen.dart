@@ -42,56 +42,7 @@ class HomeScreen extends BaseScreen<HomeController> {
               child: Text('Edit'),
             ),
             TextButton(
-              onPressed: () async {
-                codeEditorController.outputCodeController.text = CodeGenerator(
-                  value: codeEditorController.inputText,
-                ).toDart();
-
-                final path = await getApplicationDocumentsDirectory();
-                final file = File('${path.path}/test.dart');
-                ;
-
-                file
-                    .writeAsString(
-                  codeEditorController.outputCodeController.text,
-                )
-                    .then((value) async {
-                  // openTerminal = await Process.start(
-                  //   // 'osascript',
-                  //   // [
-                  //   //   '-e',
-                  //   //   'tell application "Terminal" to activate',
-                  //   // ],
-                  //   'open',
-                  //   [
-                  //     '-a',
-                  //     'Terminal',
-                  //     '"pwd"',
-                  //   ],
-                  //   runInShell: Platform.isWindows,
-                  // );
-
-                  // final cmd=ProcessCmd(
-                  //   'open',
-                  //   [
-                  //     '-a',
-                  //     'Terminal',
-                  //     '"pwd"',
-                  //   ],
-                  //   runInShell: Platform.isWindows,
-                  // );
-
-                  CLIUtils.executeDartFile(file.path);
-//                   run('''
-
-// osascript -e 'tell app "Terminal"
-//   do script 'dart run ${file.path}'
-// end tell'
-
-// ''');
-                  // openTerminal?.stdin.write('flutter doctor');
-                });
-              },
+              onPressed: codeEditorController.parsingFirstSolution,
               child: Text('Generating'),
             ),
             TextButton(

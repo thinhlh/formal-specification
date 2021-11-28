@@ -1,7 +1,7 @@
 import 'package:formal_specification/domain/data_type.dart';
 
 extension FSString on String {
-  static const String regexExact = r"\b=\b";
+  static const String regexExact = r"(?<=\b|)=\b";
 
   String get reversed {
     String result = '';
@@ -27,7 +27,33 @@ extension FSString on String {
 
   /// Replace any equals operator from precondition to equal programming language operators
   String replaceEquals() {
-    return this.replaceAll(RegExp(regexExact, multiLine: true), '==');
+    String result = this;
+    for (int i = 0; i < this.length - 1; i++) {
+      if (this[i] == '=') {
+        if ([
+          '<', // <=
+          '>', // >=
+          '!', // !=
+        ].contains(this[i - 1])) {
+          // Do nothing
+        } else {
+          if (this[i + 1] == '=') {
+            continue;
+          } else {
+            final list = this.list..insert(i, '=');
+            result = list.join();
+            break;
+          }
+        }
+      }
+    }
+
+    return result;
+
+    // RegExp(regexExact).allMatches(this).forEach((element) {
+    //   print(element.group(0));
+    // });
+    // return this.replaceAll(RegExp(regexExact, multiLine: true), '==');
   }
 
   DataType toDataType() {
@@ -35,15 +61,15 @@ extension FSString on String {
       case 'N':
         return DataType.NaturalNumber;
       case 'N*':
-        return DataType.NaturalNumber0;
+        return DataType.NaturalNumberArray;
       case 'Z':
         return DataType.Integer;
       case 'Z*':
-        return DataType.Integer0;
+        return DataType.IntegerArray;
       case 'R':
         return DataType.Real;
       case 'R*':
-        return DataType.Real0;
+        return DataType.RealArray;
       case 'B':
         return DataType.Boolean;
       case 'char*':

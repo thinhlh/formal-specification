@@ -1,0 +1,45 @@
+// (VM i TH {1..n-1}.a(i) <= a(i+1))
+
+final List<int> a=[];
+bool result=false;
+bool isTT;
+
+for (int i=1;i<n-1;i++){
+
+  result = a[i]<=a[i+1];
+
+  if((isTT && result) || (!isTT&&!result)){
+    break;
+  }
+}
+
+
+
+=====================================================================
+
+bool result=false;
+bool isTT;
+
+for (int i=0;i<n-1;i++) {
+  bool childLoopResult=false
+  bool childIsTT;
+
+  for (int j=i;j<n;j++) {
+
+    childLoopResult = a[i]<=a[j+1];
+
+    // If is TT and result is true => then this loop return true
+    // Otherwise, if it is VM and result is false => then this loop is false
+    if((childIsTT && childLoopResult) || (!childIsTT&&!childLoopResult)){
+      break;
+    }
+  }
+
+  result = childLoopResult;
+
+  if((isTT && result) || (!isTT&&!result)){
+    break;
+  }
+}
+
+result;

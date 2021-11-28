@@ -89,7 +89,7 @@ ${Values.tabs}${Values.tabs}${paramter.inputConverterInDart}
     result = '''
 ${Values.tabs}bool ${functionName}Validation() {
     
-${Values.tabs}$conditions
+${Values.tabs}${Values.tabs}$conditions
 
 ${Values.tabs}}
   ''';
@@ -104,15 +104,15 @@ ${Values.tabs}void ${functionName}Solve() {
 
 ${Values.tabs}${Values.tabs}final isValid=${functionName}Validation();
 
-${Values.tabs}${Values.tabs}if(!isValid) 
+${Values.tabs}${Values.tabs}if( !isValid ) 
 ${Values.tabs}${Values.tabs}${Values.tabs}print('Thong tin nhap khong hop le');
 
 ${Values.tabs}${Values.tabs}else {
 $statements
 ${Values.tabs}${Values.tabs}${Values.tabs}print("$functionName : \$${expectedResult.name}");
 ${Values.tabs}${Values.tabs}}
-}
-  ''';
+${Values.tabs}}
+''';
     return result;
   }
 
@@ -121,7 +121,7 @@ ${Values.tabs}${Values.tabs}}
 
     result = '''
 ${Values.tabs}void call() {
-${Values.tabs}${Values.tabs}${functionName}();
+${Values.tabs}${Values.tabs}Input${functionName}();
 ${Values.tabs}${Values.tabs}${functionName}Solve();
 ${Values.tabs}}
     ''';

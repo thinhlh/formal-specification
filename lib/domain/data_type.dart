@@ -2,11 +2,11 @@
 /// Integer0 <=> N* , Real0 <=> R*
 enum DataType {
   Integer,
-  Integer0,
+  IntegerArray,
   Real,
-  Real0,
+  RealArray,
   NaturalNumber,
-  NaturalNumber0,
+  NaturalNumberArray,
   Boolean,
   String,
 }
@@ -16,15 +16,15 @@ extension DataTypeExtension on DataType {
     switch (this) {
       case DataType.NaturalNumber:
         return 'N';
-      case DataType.NaturalNumber0:
+      case DataType.NaturalNumberArray:
         return 'N*';
       case DataType.Integer:
         return 'Z';
-      case DataType.Integer0:
+      case DataType.IntegerArray:
         return 'Z*';
       case DataType.Real:
         return 'R';
-      case DataType.Real0:
+      case DataType.RealArray:
         return 'R*';
       case DataType.Boolean:
         return 'B';
@@ -39,16 +39,16 @@ extension DataTypeExtension on DataType {
     switch (this) {
       case DataType.NaturalNumber:
         return 'int';
-      case DataType.NaturalNumber0:
-        return 'int';
+      case DataType.NaturalNumberArray:
+        return 'List<int>';
       case DataType.Integer:
         return 'int';
-      case DataType.Integer0:
-        return 'int';
+      case DataType.IntegerArray:
+        return 'List<int>';
       case DataType.Real:
         return 'double';
-      case DataType.Real0:
-        return 'double';
+      case DataType.RealArray:
+        return 'List<double>';
       case DataType.Boolean:
         return 'bool';
       case DataType.String:
