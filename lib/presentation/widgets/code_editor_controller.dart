@@ -65,6 +65,7 @@ class CodeEditorController extends BaseController {
 
   void parsingFirstSolution() {
     _convertingToDart();
+    _saveToFile();
     // _saveToFile().then((file) => CLIUtils.executeDartFile(file.path));
   }
 

@@ -96,7 +96,7 @@ ${Values.tabs}}
     return result;
   }
 
-  String generateSolveFunction(String statements) {
+  String generateSolveFunction(String statements, bool isType2) {
     String result = "";
 
     result = '''
@@ -104,11 +104,12 @@ ${Values.tabs}void ${functionName}Solve() {
 
 ${Values.tabs}${Values.tabs}final isValid=${functionName}Validation();
 
-${Values.tabs}${Values.tabs}if( !isValid ) 
+${Values.tabs}${Values.tabs}if( !isValid ){
 ${Values.tabs}${Values.tabs}${Values.tabs}print('Thong tin nhap khong hop le');
-
+${Values.tabs}${Values.tabs}${Values.tabs}return;
+${Values.tabs}${Values.tabs}}
 ${Values.tabs}${Values.tabs}else {
-$statements
+${isType2 ? expectedResult.name + '=' : ''}$statements${isType2 ? ';' : ''}
 ${Values.tabs}${Values.tabs}${Values.tabs}print("$functionName : \$${expectedResult.name}");
 ${Values.tabs}${Values.tabs}}
 ${Values.tabs}}

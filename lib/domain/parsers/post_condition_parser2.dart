@@ -25,6 +25,9 @@ class PostConditionParserType2 implements PostConditionParser {
 
   /// The last statements is always a condition
   final List<String> _statements = [];
+
+  /// The number of range is the number of _statements - 1
+  /// The number of ranges also the number of loop
   final List<Tuple2<String, String>> _ranges = [];
 
   PostConditionParserType2({required String input}) {
@@ -83,71 +86,72 @@ class PostConditionParserType2 implements PostConditionParser {
     );
   }
 
+  // Retrieve variable from statement
+  String _retrieveVariable(String statement) {
+    return statement.substring(
+      2,
+      statement.length - 2,
+    );
+  }
+
+  bool _retrieveIsTT(String statement) {
+    return _statements.first.substring(0, 2) == 'TT';
+  }
+
   /// If [resultOrCondition] is null, then this is the outer loop,
   // Else this loop is the last nested loop
-  String generateLoop(
-    Range range,
-    String functionName, {
+  String generateLoop({
+    required Tuple2 range,
+    required bool isTT,
+    required String variable,
+    required String functionName,
     String? resultOrCondition,
   }) {
     String result = "";
-    bool isTT = _statements.first.substring(0, 2) == 'TT';
-
-    String variable = _statements.first.substring(
-      2,
-      _statements.first.length - 2,
-    );
 
     result = '''
 bool $functionName() {
   bool isTT = $isTT;
   bool result = false;  
 
-  for (int $variable = ${_ranges.first.value1}; i < ${_ranges.first.value2}; i++) {
+  for (int $variable = ${range.value1}; i < ${range.value2}; i++) {
     result = $resultOrCondition;
 
     if(isTT && result || !isTT && !result) {
       break;
     }
-}
-
-return result;
+  }
+  return result;
 }
     ''';
 
     return result;
+  }
+
+  /// This method is used to retrieve function caller name
+  /// For e.g 1loop => generateLoop1
+  /// For e.g 2loop => this will also return generateLoop1
+  String get functionCallerName {
+    return 'generateLoop${_statements.length > 1 ? 1 : 0}()';
   }
 
   @override
   String get generateSolve {
     String result = "";
-
-    return result;
-  }
-
-  String get _generateFirstLoop {
-    String result = "";
-
-    bool isTT = _statements.first.substring(0, 2) == 'TT';
-    String variable = _statements.first.substring(
-      2,
-      _statements.first.length - 2,
-    );
-    result = '''    
-bool isTT = $isTT;
-bool result = false;  
-
-for (int $variable = ${_ranges.first.value1}; i < ${_ranges.first.value2}; i++){
-  result = ${_statements.last.replaceEquals()};
-
-  if(isTT && result || !isTT && !result){
-    break;
-  }
-}
-
-return result;
-    ''';
-    print(result);
+    for (int i = 0; i < _ranges.length; i++) {
+      result += generateLoop(
+        range: _ranges[i],
+        functionName: 'generateLoop${i + 1}',
+        variable: _retrieveVariable(_statements[i]),
+        isTT: _retrieveIsTT(_statements[i]),
+        resultOrCondition: i == _ranges.length - 1
+            ? _statements.last
+                .replaceEquals()
+                .replaceAll('(', '[')
+                .replaceAll(')', ']')
+            : 'generateLoop${i + 2}()',
+      );
+    }
     return result;
   }
 }

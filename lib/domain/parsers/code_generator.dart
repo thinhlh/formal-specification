@@ -48,7 +48,8 @@ class CodeGenerator implements Language {
 
   @override
   String toDart() {
-    return '''
+    bool isType2 = postCondition is PostConditionParserType2;
+    String result = '''
 import 'dart:io';
 
 void main() {
@@ -63,11 +64,15 @@ ${input.generateInputFunction}
 
 ${input.generateValidationFunction(preCondition.generateValidation)}
 
-${input.generateSolveFunction(postCondition.generateSolve)}
+${input.generateSolveFunction(isType2 ? (postCondition as PostConditionParserType2).functionCallerName : postCondition.generateSolve, isType2)}
+
+${postCondition is PostConditionParserType2 ? postCondition.generateSolve : ''}
 
 ${input.generateCallFunction}
 }
 ''';
+    print(result);
+    return result;
   }
 
   String get generateFields {

@@ -31,6 +31,12 @@ class Argument implements Language {
     return '${dataType.toDart()} $name;';
   }
 
+  bool get isArrayType {
+    return dataType == DataType.NaturalNumberArray ||
+        dataType == DataType.RealArray ||
+        dataType == DataType.IntegerArray;
+  }
+
   /// Convert a string from CLI to appropriate type in Dart
   String get inputConverterInDart {
     switch (dataType) {
@@ -47,6 +53,9 @@ class Argument implements Language {
       case DataType.NaturalNumberArray:
       case DataType.RealArray:
       case DataType.IntegerArray:
+        {
+          String result = "";
+        }
         return '';
 
       case DataType.Real:
