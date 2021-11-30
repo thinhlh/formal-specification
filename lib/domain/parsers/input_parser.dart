@@ -1,12 +1,11 @@
 import 'package:formal_specification/domain/argument.dart';
-import 'package:formal_specification/domain/data_type.dart';
 import 'package:formal_specification/domain/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 class InputParser {
   late final String functionName;
   late final Argument expectedResult;
-  late final List<Argument> parameters;
+  late List<Argument> parameters;
   InputParser({required String input}) {
     input = input.removeWhiteSpace();
 
@@ -60,26 +59,29 @@ class InputParser {
     return 'Function Name: $functionName \nParameters: $parameters \nExpected Result $expectedResult';
   }
 
-  String get generateInputFunction {
+  String generateInputFunction(bool isType2) {
     String result = "";
 
     result = '''
 ${Values.tabs}void Input$functionName() {
-$generateInputParameters
+${generateInputParameters(isType2)}
 ${Values.tabs}}''';
     return result;
   }
 
-  String get generateInputParameters {
+  String generateInputParameters(bool isType2) {
     String result = "\n";
 
-    result += parameters.map((paramter) {
+    if (isType2) {
+      // Input n first, then input element in the array
+      parameters = parameters.reversed.toList();
+    }
+    result += parameters.map((parameter) {
       return '''
-${Values.tabs}${Values.tabs}print("Enter ${paramter.name}: ");
-${Values.tabs}${Values.tabs}${paramter.inputConverterInDart}
+${Values.tabs}${Values.tabs}print("Enter ${parameter.name}: ");
+${Values.tabs}${Values.tabs}${parameter.inputConverterInDart(variableForNumberOfElement: parameters.first.name)}
 ''';
     }).join('\n');
-
     return result;
   }
 
@@ -109,7 +111,7 @@ ${Values.tabs}${Values.tabs}${Values.tabs}print('Thong tin nhap khong hop le');
 ${Values.tabs}${Values.tabs}${Values.tabs}return;
 ${Values.tabs}${Values.tabs}}
 ${Values.tabs}${Values.tabs}else {
-${isType2 ? expectedResult.name + '=' : ''}$statements${isType2 ? ';' : ''}
+${isType2 ? Values.tabs + Values.tabs + Values.tabs + expectedResult.name + '=' : ''}$statements${isType2 ? ';' : ''}
 ${Values.tabs}${Values.tabs}${Values.tabs}print("$functionName : \$${expectedResult.name}");
 ${Values.tabs}${Values.tabs}}
 ${Values.tabs}}

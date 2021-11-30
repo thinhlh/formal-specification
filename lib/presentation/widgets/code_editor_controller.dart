@@ -65,7 +65,6 @@ class CodeEditorController extends BaseController {
 
   void parsingFirstSolution() {
     _convertingToDart();
-    _saveToFile();
     // _saveToFile().then((file) => CLIUtils.executeDartFile(file.path));
   }
 
@@ -85,5 +84,10 @@ class CodeEditorController extends BaseController {
     return file.writeAsString(
       _outputCodeController.text,
     );
+  }
+
+  Future<void> buildSolution() async {
+    parsingFirstSolution();
+    _saveToFile().then((value) => CLIUtils.executeDartFile(value.path));
   }
 }

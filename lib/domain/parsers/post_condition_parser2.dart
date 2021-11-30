@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
-import 'package:formal_specification/domain/parsers/range.dart';
 import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/utils/values.dart';
 
 /// This class is used for post condition parser with 2nd types
 /// They will generally have 2 instances: 1 loop and 2 loops
@@ -106,23 +106,24 @@ class PostConditionParserType2 implements PostConditionParser {
     required String variable,
     required String functionName,
     String? resultOrCondition,
+    String? arguments,
   }) {
     String result = "";
 
     result = '''
-bool $functionName() {
-  bool isTT = $isTT;
-  bool result = false;  
+${Values.tabs}bool $functionName(${arguments ?? ''}) {
+${Values.tabs}${Values.tabs}bool isTT = $isTT;
+${Values.tabs}${Values.tabs}bool result = false;  
 
-  for (int $variable = ${range.value1}; i < ${range.value2}; i++) {
-    result = $resultOrCondition;
+${Values.tabs}${Values.tabs}for (int $variable = ${range.value1}; $variable < ${range.value2}; $variable++) {
+${Values.tabs}${Values.tabs}${Values.tabs}result = $resultOrCondition;
 
-    if(isTT && result || !isTT && !result) {
-      break;
-    }
-  }
-  return result;
-}
+${Values.tabs}${Values.tabs}${Values.tabs}if(isTT && result || !isTT && !result) {
+${Values.tabs}${Values.tabs}${Values.tabs}${Values.tabs}break;
+${Values.tabs}${Values.tabs}${Values.tabs}}
+${Values.tabs}${Values.tabs}}
+${Values.tabs}${Values.tabs}return result;
+${Values.tabs}}
     ''';
 
     return result;
@@ -135,22 +136,33 @@ bool $functionName() {
     return 'generateLoop${_statements.length > 1 ? 1 : 0}()';
   }
 
+  /// The result or codition have 2 types
+  /// [Result]: This is a fuction caller that call the next loop and paste the current iteration variable to the next function
+  /// [Condition]: This is a condition, used for the last loop
+  /// [Argument]: This is a {String} that will be passed as arguments to the next loop
   @override
   String get generateSolve {
     String result = "";
     for (int i = 0; i < _ranges.length; i++) {
       result += generateLoop(
-        range: _ranges[i],
-        functionName: 'generateLoop${i + 1}',
-        variable: _retrieveVariable(_statements[i]),
-        isTT: _retrieveIsTT(_statements[i]),
-        resultOrCondition: i == _ranges.length - 1
-            ? _statements.last
-                .replaceEquals()
-                .replaceAll('(', '[')
-                .replaceAll(')', ']')
-            : 'generateLoop${i + 2}()',
-      );
+            range: _ranges[i],
+            functionName: 'generateLoop${i + 1}',
+            variable: _retrieveVariable(_statements[i]),
+            isTT: _retrieveIsTT(_statements[i]),
+            resultOrCondition: i == _ranges.length - 1
+                ? _statements.last
+                    .replaceEquals()
+                    .replaceAll('(', '[')
+                    .replaceAll(')', ']')
+                : 'generateLoop${i + 2}(${_statements.sublist(0, i + 1).map((e) => _retrieveVariable(e)).join(',')})',
+            arguments: i == 0
+                ? null
+                : _statements
+                    .sublist(0, i)
+                    .map((e) => 'int ${_retrieveVariable(e)}')
+                    .join(','),
+          ) +
+          '\n';
     }
     return result;
   }

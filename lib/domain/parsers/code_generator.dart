@@ -60,7 +60,7 @@ void main() {
 class Solve {
 $generateFields
 
-${input.generateInputFunction}
+${input.generateInputFunction(isType2)}
 
 ${input.generateValidationFunction(preCondition.generateValidation)}
 
@@ -80,9 +80,9 @@ ${input.generateCallFunction}
     final Argument expectedResult = input.expectedResult;
 
     String result = "";
-    result += '${Values.tabs}late ${expectedResult.toDart()}';
+    result += '${Values.tabs}${expectedResult.toDart()}';
     parameters.forEach((element) {
-      result += '\n${Values.tabs}late ${element.toDart()}';
+      result += '\n${Values.tabs} ${element.toDart()}';
     });
 
     return result;

@@ -1,6 +1,7 @@
 import 'package:formal_specification/domain/data_type.dart';
 import 'package:formal_specification/domain/languages/lanaguage.dart';
 import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/utils/values.dart';
 
 class Argument implements Language {
   final String name;
@@ -28,7 +29,26 @@ class Argument implements Language {
 
   @override
   String toDart() {
-    return '${dataType.toDart()} $name;';
+    return '${dataType.toDart()} $name = $_defaultValue;';
+  }
+
+  String get _defaultValue {
+    switch (dataType) {
+      case DataType.NaturalNumber:
+      case DataType.Integer:
+      case DataType.Real:
+        return '0';
+      case DataType.Boolean:
+        return 'false';
+      case DataType.String:
+        return '""';
+      case DataType.NaturalNumberArray:
+      case DataType.RealArray:
+      case DataType.IntegerArray:
+        return '[]';
+      default:
+        return '0';
+    }
   }
 
   bool get isArrayType {
@@ -38,7 +58,9 @@ class Argument implements Language {
   }
 
   /// Convert a string from CLI to appropriate type in Dart
-  String get inputConverterInDart {
+  /// Variable for number of element is the variable to evaluate the number of element inside the array
+  /// For e.g(a:R*,n:N) => this is n
+  String inputConverterInDart({String? variableForNumberOfElement}) {
     switch (dataType) {
       case DataType.NaturalNumber:
 
@@ -49,17 +71,30 @@ class Argument implements Language {
       case DataType.String:
         return '$name = stdin.readLineSync().toString();';
 
-      /// TODO Array input
       case DataType.NaturalNumberArray:
       case DataType.RealArray:
       case DataType.IntegerArray:
         {
-          String result = "";
+          String result = "$name";
+          if (dataType == DataType.NaturalNumberArray ||
+              dataType == DataType.IntegerArray) {
+            result = '''
+for (int i = 0; i< ${variableForNumberOfElement}; i++) {
+${Values.tabs}${Values.tabs}${Values.tabs}print('Enter $name[\$i]: ');
+${Values.tabs}${Values.tabs}${Values.tabs}$name.add(int.tryParse(stdin.readLineSync() ?? "") ?? 0);
+${Values.tabs}${Values.tabs}}            
+            ''';
+          } else {
+            result = '''
+for (int i = 0; i< ${variableForNumberOfElement}; i++) {
+${Values.tabs}${Values.tabs}${Values.tabs}print('Enter $name[\$i]: ');
+${Values.tabs}${Values.tabs}${Values.tabs}$name.add(double.tryParse(stdin.readLineSync() ?? "") ?? 0);
+${Values.tabs}${Values.tabs}}           
+''';
+          }
+          return result;
         }
-        return '';
-
       case DataType.Real:
-        return '';
       default:
         return '$name = double.tryParse(stdin.readLineSync() ?? "") ?? 0;';
     }
