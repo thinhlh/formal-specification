@@ -17,6 +17,9 @@ class HomeScreen extends BaseScreen<HomeController> {
 
   @override
   Widget buildBody(BuildContext context) {
+    codeEditorController.onInputTextChange = controller.onTextChanged;
+    codeEditorController.initCodeController();
+
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -48,44 +51,69 @@ class HomeScreen extends BaseScreen<HomeController> {
         Row(
           children: [
             IconButton(
+              hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               icon: Icon(Icons.attach_file_sharp),
               onPressed: () {},
             ),
             IconButton(
+              hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onPressed: () {},
               icon: Icon(Icons.folder_open_rounded),
             ),
             IconButton(
+              hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onPressed: () {},
               icon: Icon(Icons.save),
             ),
             IconButton(
+              hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onPressed: () {},
               icon: Icon(Icons.cut),
             ),
             IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
               icon: Icon(Icons.file_copy),
               onPressed: () {},
             ),
-            IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              icon: Icon(Icons.undo),
-              onPressed: () {},
+            Obx(
+              () => IconButton(
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                icon: Icon(
+                  Icons.undo,
+                  color: controller.undoStatus.value
+                      ? AppColors.onSurface
+                      : AppColors.disabledColor,
+                ),
+                onPressed: () => codeEditorController.inputCodeController.text =
+                    controller.undo(),
+              ),
             ),
-            IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              icon: Icon(Icons.redo),
-              onPressed: () {},
+            Obx(
+              () => IconButton(
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                icon: Icon(
+                  Icons.redo,
+                  color: controller.redoStatus.value
+                      ? AppColors.onSurface
+                      : AppColors.disabledColor,
+                ),
+                onPressed: () => codeEditorController.inputCodeController.text =
+                    controller.redo(),
+              ),
             ),
           ],
         ),

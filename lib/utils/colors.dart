@@ -12,6 +12,7 @@ class AppColors {
   static const Color secondary = Color(0xffBC9CB0);
   static const Color light = Color(0xFFFFFF);
   static const Color tetiaryColor = Color(0xffC0C0C0);
+  static const Color disabledColor = Color(0xff9A9AA0);
 
   static const Color opacity = Color.fromRGBO(255, 255, 255, 0.2);
 }

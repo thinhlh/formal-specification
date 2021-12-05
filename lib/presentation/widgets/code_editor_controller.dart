@@ -11,17 +11,14 @@ import 'package:highlight/languages/dart.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CodeEditorController extends BaseController {
+  late final void Function(String)? onInputTextChange;
   late final CodeController _inputCodeController;
   late final CodeController _outputCodeController;
-  @override
-  void onInit() {
-    super.onInit();
-    _initCodeController();
-  }
 
-  void _initCodeController() {
+  void initCodeController() {
     // Instantiate the CodeController
     _inputCodeController = CodeController(
+      onChange: this.onInputTextChange,
       params: EditorParams(tabSpaces: 4),
       language: dart,
       theme: monokaiSublimeTheme,

@@ -9,5 +9,5 @@ void main() async {
 }
 
 void initDependencies() {
-  Get.lazyPut(() => CodeEditorController());
+  // Get.lazyPut(() => CodeEditorController());
 }
