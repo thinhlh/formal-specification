@@ -1,6 +1,6 @@
-import 'package:formal_specification/domain/data_type.dart';
+import 'package:formal_specification/domain/entity/data_type.dart';
 import 'package:formal_specification/domain/languages/lanaguage.dart';
-import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/utils/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 class Argument implements Language {

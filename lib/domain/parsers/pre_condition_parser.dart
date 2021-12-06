@@ -1,4 +1,4 @@
-import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/utils/string_extension.dart';
 import 'package:formal_specification/utils/string_utils.dart';
 
 class PreConditionParser {

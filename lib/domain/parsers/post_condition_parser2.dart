@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
-import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/utils/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 /// This class is used for post condition parser with 2nd types
@@ -33,6 +33,7 @@ class PostConditionParserType2 implements PostConditionParser {
   PostConditionParserType2({required String input}) {
     parsingInput(input);
   }
+
   @override
   void parsingInput(String input) {
     // RegExp(rangeRegex).allMatches(input).forEach((element) {

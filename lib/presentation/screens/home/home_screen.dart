@@ -6,7 +6,7 @@ import 'package:formal_specification/base/base_screen.dart';
 import 'package:formal_specification/presentation/screens/home/home_controller.dart';
 import 'package:formal_specification/presentation/widgets/code_editor.dart';
 import 'package:formal_specification/presentation/widgets/code_editor_controller.dart';
-import 'package:formal_specification/utils/cli_utils.dart';
+import 'package:formal_specification/presentation/widgets/custom_icon_button.dart';
 import 'package:formal_specification/utils/colors.dart';
 import 'package:formal_specification/utils/dimens.dart';
 import 'package:formal_specification/utils/style.dart';
@@ -18,113 +18,12 @@ class HomeScreen extends BaseScreen<HomeController> {
 
   @override
   Widget buildBody(BuildContext context) {
-    codeEditorController.onInputTextChange = controller.onTextChanged;
-    codeEditorController.initCodeController();
-
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            TextButton(
-              onPressed: () {
-                Process.run('ls', ['-l']).then((ProcessResult results) {
-                  print(results.stdout);
-                });
-              },
-              child: Text('File'),
-            ),
-            TextButton(
-              onPressed: () => {},
-              child: Text('Edit'),
-            ),
-            TextButton(
-              onPressed: codeEditorController.generatingSolution,
-              child: Text('Generating'),
-            ),
-            TextButton(
-              onPressed: () => controller.showAbout(),
-              child: Text('About'),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            IconButton(
-              hoverColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              icon: Icon(Icons.attach_file_sharp),
-              onPressed: () async {
-                final File? file = await controller.openFile();
-                if (file == null) return;
-
-                codeEditorController.inputCodeController.text =
-                    await file.readAsString();
-              },
-            ),
-            IconButton(
-              hoverColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onPressed: () {},
-              icon: Icon(Icons.folder_open_rounded),
-            ),
-            IconButton(
-              hoverColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onPressed: () =>
-                  controller.saveFile(codeEditorController.outputText),
-              icon: Icon(Icons.save),
-            ),
-            IconButton(
-              hoverColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onPressed: () => {},
-              icon: Icon(Icons.cut),
-            ),
-            IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              icon: Icon(Icons.file_copy),
-              onPressed: () {},
-            ),
-            Obx(
-              () => IconButton(
-                hoverColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                icon: Icon(
-                  Icons.undo,
-                  color: controller.undoStatus.value
-                      ? AppColors.onSurface
-                      : AppColors.disabledColor,
-                ),
-                onPressed: () => codeEditorController.inputCodeController.text =
-                    controller.undo(),
-              ),
-            ),
-            Obx(
-              () => IconButton(
-                hoverColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                icon: Icon(
-                  Icons.redo,
-                  color: controller.redoStatus.value
-                      ? AppColors.onSurface
-                      : AppColors.disabledColor,
-                ),
-                onPressed: () => codeEditorController.inputCodeController.text =
-                    controller.redo(),
-              ),
-            ),
-          ],
-        ),
+        buildTextMenu(),
+        buildIconButtons(),
         Expanded(
           child: Row(
             children: [
@@ -136,113 +35,12 @@ class HomeScreen extends BaseScreen<HomeController> {
                         vertical: Dimens.mediumHeightDimens,
                         horizontal: Dimens.extraLargeHeightDimens,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text('Class name'),
-                                      flex: 2,
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          fillColor: AppColors.light,
-                                          filled: true,
-                                          focusColor: AppColors.light,
-                                          hoverColor: AppColors.light,
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.smallRadius),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.smallRadius),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.smallRadius),
-                                          ),
-                                          isDense: true,
-                                          hintText: 'Class name',
-                                        ),
-                                        controller:
-                                            controller.classNameController,
-                                        style: Get.textTheme.bodyText1,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: Dimens.mediumHeightDimens),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text('Executable file name'),
-                                      flex: 2,
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          fillColor: AppColors.light,
-                                          filled: true,
-                                          focusColor: AppColors.light,
-                                          hoverColor: AppColors.light,
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.smallRadius),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.smallRadius),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.smallRadius),
-                                          ),
-                                          isDense: true,
-                                          hintText: 'Exe,bat file name',
-                                        ),
-                                        controller:
-                                            controller.exeNameController,
-                                        style: Get.textTheme.bodyText1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: Dimens.extraLargeWidthDimens),
-                          ElevatedButton(
-                            onPressed: () => codeEditorController.buildSolution(
-                              controller.classNameController.text,
-                            ),
-                            child: Text(
-                              'Build Solution',
-                              style: TextStyle(
-                                color: AppColors.onSurface,
-                                fontWeight: AppStyle.BOLD,
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              elevation: MaterialStateProperty.all(5),
-                              backgroundColor: MaterialStateProperty.all(
-                                AppColors.tetiaryColor,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                      child: buildSolutionInfoWidgets(),
                     ),
                     Expanded(
                       child: CodeEditor(
                         isInput: true,
+                        focusNode: codeEditorController.inputFocusNode,
                       ),
                     ),
                   ],
@@ -251,7 +49,7 @@ class HomeScreen extends BaseScreen<HomeController> {
               Container(
                 height: double.infinity,
                 color: AppColors.background,
-                width: 2,
+                width: Dimens.mediumWidthDimens,
               ),
               Expanded(
                 child: CodeEditor(
@@ -263,5 +61,258 @@ class HomeScreen extends BaseScreen<HomeController> {
         ),
       ],
     );
+  }
+
+  Widget buildTextMenu() {
+    return Row(
+      children: [
+        SizedBox(width: Dimens.smallWidthDimens),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: Dimens.mediumWidthDimens),
+          child: PopupMenuButton(
+            tooltip: 'Show file menu',
+            itemBuilder: (_) => <PopupMenuEntry<dynamic>>[
+              PopupMenuItem<dynamic>(
+                child: Text('New screen'),
+                onTap: clearComposing,
+              ),
+              PopupMenuItem<dynamic>(
+                child: Text('Open file'),
+                onTap: openFile,
+              ),
+              PopupMenuItem<dynamic>(
+                child: Text('Save file'),
+                onTap: () =>
+                    controller.saveFile(codeEditorController.outputText),
+              ),
+              PopupMenuItem<dynamic>(
+                child: Text('Exit'),
+                onTap: controller.exit,
+              ),
+            ],
+            child: Text(
+              'File',
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: Dimens.mediumWidthDimens),
+          child: PopupMenuButton(
+            tooltip: 'Show edit menu',
+            itemBuilder: (_) => <PopupMenuEntry<dynamic>>[
+              PopupMenuItem<dynamic>(
+                child: Text('Copy'),
+                onTap: codeEditorController.copy,
+              ),
+              PopupMenuItem<dynamic>(
+                child: Text('Paste'),
+                onTap: codeEditorController.paste,
+              ),
+              PopupMenuItem<dynamic>(
+                child: Text('Cut'),
+                onTap: codeEditorController.cut,
+              ),
+              PopupMenuItem<dynamic>(
+                child: Text('Undo'),
+                onTap: codeEditorController.undo,
+              ),
+              PopupMenuItem<dynamic>(
+                child: Text('Redo'),
+                onTap: codeEditorController.redo,
+              ),
+            ],
+            child: Text(
+              'Edit',
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+        ),
+        Tooltip(
+          message: 'Generate solution',
+          child: TextButton(
+            onPressed: codeEditorController.generatingSolution,
+            child: Text('Generating'),
+          ),
+        ),
+        Tooltip(
+          message: 'About Us',
+          child: TextButton(
+            onPressed: () => controller.showAbout(),
+            child: Text('About'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildIconButtons() {
+    return Container(
+      margin: EdgeInsets.only(left: Dimens.smallWidthDimens),
+      child: Row(
+        children: [
+          CustomIconButton(
+            icon: Icons.post_add,
+            onPressed: clearComposing,
+          ),
+          CustomIconButton(
+            onPressed: openFile,
+            icon: Icons.folder_open_rounded,
+          ),
+          CustomIconButton(
+            onPressed: () =>
+                controller.saveFile(codeEditorController.outputText),
+            icon: Icons.save,
+          ),
+          CustomIconButton(
+            onPressed: codeEditorController.cut,
+            icon: Icons.cut,
+          ),
+          CustomIconButton(
+            icon: Icons.file_copy,
+            onPressed: codeEditorController.copy,
+          ),
+          CustomIconButton(
+            icon: Icons.paste,
+            onPressed: codeEditorController.paste,
+          ),
+          Obx(
+            () => CustomIconButton(
+              icon: Icons.undo,
+              iconColor: codeEditorController.undoStatus.value
+                  ? AppColors.onSurface
+                  : AppColors.disabledColor,
+              onPressed: codeEditorController.undo,
+            ),
+          ),
+          Obx(
+            () => CustomIconButton(
+              icon: Icons.redo,
+              iconColor: codeEditorController.redoStatus.value
+                  ? AppColors.onSurface
+                  : AppColors.disabledColor,
+              onPressed: codeEditorController.redo,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSolutionInfoWidgets() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Class name'),
+                    flex: 2,
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        fillColor: AppColors.light,
+                        filled: true,
+                        focusColor: AppColors.light,
+                        hoverColor: AppColors.light,
+                        border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(Dimens.smallRadius),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(Dimens.smallRadius),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(Dimens.smallRadius),
+                        ),
+                        isDense: true,
+                        hintText: 'Class name',
+                      ),
+                      controller: controller.classNameController,
+                      style: Get.textTheme.bodyText1,
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: Dimens.mediumHeightDimens),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Executable file name'),
+                    flex: 2,
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        fillColor: AppColors.light,
+                        filled: true,
+                        focusColor: AppColors.light,
+                        hoverColor: AppColors.light,
+                        border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(Dimens.smallRadius),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(Dimens.smallRadius),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(Dimens.smallRadius),
+                        ),
+                        isDense: true,
+                        hintText: 'Exe,bat file name',
+                      ),
+                      controller: controller.exeNameController,
+                      style: Get.textTheme.bodyText1,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: Dimens.extraLargeWidthDimens),
+        ElevatedButton(
+          onPressed: () => codeEditorController.buildSolution(
+            controller.classNameController.text,
+            controller.exeNameController.text,
+          ),
+          child: Text(
+            'Build Solution',
+            style: TextStyle(
+              color: AppColors.onSurface,
+              fontWeight: AppStyle.BOLD,
+            ),
+          ),
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.all(5),
+            backgroundColor: MaterialStateProperty.all(
+              AppColors.tetiaryColor,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  void clearComposing() async {
+    controller.clearComposing();
+    codeEditorController.clearComposing();
+  }
+
+  void openFile() async {
+    final File? file = await controller.openFile();
+    if (file == null) return;
+
+    codeEditorController.inputCodeController.text = await file.readAsString();
   }
 }

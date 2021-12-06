@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:formal_specification/base/base_controller.dart';
-import 'package:formal_specification/domain/text_history.dart';
+import 'package:formal_specification/utils/dimens.dart';
 import 'package:formal_specification/utils/string_utils.dart';
 import 'package:formal_specification/utils/values.dart';
 import 'package:get/get.dart';
@@ -16,10 +17,6 @@ class HomeController extends BaseController {
   final TextEditingController exeNameController = TextEditingController();
 
   final FilePicker _filePicker = FilePicker.platform;
-  final TextHistory textHistory = TextHistory();
-
-  final RxBool undoStatus = false.obs;
-  final RxBool redoStatus = false.obs;
 
   void showAbout() {
     if (Get.context != null)
@@ -31,38 +28,23 @@ class HomeController extends BaseController {
           width: 100.w,
           height: 100.h,
         ),
+        children: [
+          SizedBox(height: Dimens.mediumHeightDimens),
+          Text('Author: ${Values.author}'),
+          Text('Release date: ${Values.releaseDate}'),
+        ],
         applicationName: Values.appName,
       );
   }
 
-  void onTextChanged(String value) {
-    print('Text Change $value');
-
-    textHistory.onTextChanged(value);
-
-    undoStatus.value = textHistory.isUndoAble;
-    redoStatus.value = textHistory.isRedoAble;
-  }
-
-  String undo() {
-    if (undoStatus.value) {
-      return textHistory.onUndo();
-    }
-
-    return '';
-  }
-
-  String redo() {
-    if (redoStatus.value) {
-      return textHistory.onRedo();
-    }
-
-    return '';
+  void clearComposing() {
+    classNameController.clear();
+    exeNameController.clear();
   }
 
   Future<File?> openFile() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
+      FilePickerResult? result = await _filePicker.pickFiles(
         allowMultiple: false,
         allowCompression: false,
         allowedExtensions: ['txt'],
@@ -91,25 +73,40 @@ class HomeController extends BaseController {
   }
 
   void saveFile(String contents) async {
-    final String documentDirectory =
-        await getApplicationDocumentsDirectory().then((value) => value.path);
-    print(documentDirectory);
+    if (classNameController.text.isEmpty) {
+      showAlertDialog(
+        title: 'Invalid file name',
+        message: 'File name must not be empty',
+      );
+    } else {
+      final String documentDirectory =
+          await getApplicationDocumentsDirectory().then((value) => value.path);
 
-    final File file = File(
-      documentDirectory +
-          Platform.pathSeparator +
-          "${classNameController.text}.dart",
+      final File file = File(
+        documentDirectory +
+            Platform.pathSeparator +
+            "${classNameController.text}.dart",
+      );
+
+      await file.writeAsString(contents);
+    }
+  }
+
+  void exit() async {
+    // To avoid navigator back of context menu
+    await Future.delayed(Duration(milliseconds: 1));
+    showAlertDialog(
+      title: 'Are you sure to exit the application?',
+      actions: <ElevatedButton>[
+        ElevatedButton(
+          onPressed: () => Get.back(),
+          child: Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () => SystemNavigator.pop(),
+          child: Text('Exit'),
+        ),
+      ],
     );
-
-    await file.writeAsString(contents);
-
-    // String? outputFile = await FilePicker.platform.saveFile(
-    //   dialogTitle: 'Please select an output file: ',
-    //   fileName: 'fileName.dart',
-    // );
-
-    // if (outputFile == null) {
-    //   // User canceled the picker
-    // }
   }
 }

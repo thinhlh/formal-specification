@@ -1,4 +1,4 @@
-import 'package:formal_specification/domain/data_type.dart';
+import 'package:formal_specification/domain/entity/data_type.dart';
 
 extension FSString on String {
   static const String regexExact = r"(?<=\b|)=\b";

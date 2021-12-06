@@ -1,5 +1,5 @@
-import 'package:formal_specification/domain/argument.dart';
-import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/domain/entity/argument.dart';
+import 'package:formal_specification/utils/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 class InputParser {

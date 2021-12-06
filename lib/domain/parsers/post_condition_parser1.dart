@@ -1,5 +1,5 @@
 import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
-import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/utils/string_extension.dart';
 import 'package:formal_specification/utils/string_utils.dart';
 
 /// This class contains a conditions map

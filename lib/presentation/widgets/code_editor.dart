@@ -6,11 +6,16 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 
 class CodeEditor extends StatelessWidget {
   final bool isInput;
-  CodeEditor({required this.isInput});
+  final FocusNode? focusNode;
+  CodeEditor({
+    required this.isInput,
+    this.focusNode,
+  });
   @override
   Widget build(BuildContext context) {
     return GetBuilder<CodeEditorController>(
       builder: (controller) => CodeField(
+        focusNode: focusNode,
         expands: true,
         controller: isInput
             ? controller.inputCodeController

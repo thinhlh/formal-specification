@@ -1,0 +1,1 @@
+class FileNameNotValidException implements Exception {}

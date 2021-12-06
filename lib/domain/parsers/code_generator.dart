@@ -1,11 +1,11 @@
-import 'package:formal_specification/domain/argument.dart';
+import 'package:formal_specification/domain/entity/argument.dart';
 import 'package:formal_specification/domain/languages/lanaguage.dart';
 import 'package:formal_specification/domain/parsers/input_parser.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser1.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser2.dart';
 import 'package:formal_specification/domain/parsers/pre_condition_parser.dart';
-import 'package:formal_specification/domain/string_extension.dart';
+import 'package:formal_specification/utils/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 class CodeGenerator implements Language {
@@ -71,15 +71,12 @@ ${postCondition is PostConditionParserType2 ? postCondition.generateSolve : ''}
 ${input.generateCallFunction}
 }
 ''';
-    print(result);
     return result;
   }
 
   String get generateFields {
     final List<Argument> parameters = input.parameters;
     final Argument expectedResult = input.expectedResult;
-
-    print('ARGUMENT $expectedResult');
 
     String result = "";
     result += '${Values.tabs}${expectedResult.toDart()}';
