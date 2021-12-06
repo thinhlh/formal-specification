@@ -6,6 +6,7 @@ import 'package:formal_specification/base/base_screen.dart';
 import 'package:formal_specification/presentation/screens/home/home_controller.dart';
 import 'package:formal_specification/presentation/widgets/code_editor.dart';
 import 'package:formal_specification/presentation/widgets/code_editor_controller.dart';
+import 'package:formal_specification/utils/cli_utils.dart';
 import 'package:formal_specification/utils/colors.dart';
 import 'package:formal_specification/utils/dimens.dart';
 import 'package:formal_specification/utils/style.dart';
@@ -39,7 +40,7 @@ class HomeScreen extends BaseScreen<HomeController> {
               child: Text('Edit'),
             ),
             TextButton(
-              onPressed: codeEditorController.parsingFirstSolution,
+              onPressed: codeEditorController.generatingSolution,
               child: Text('Generating'),
             ),
             TextButton(
@@ -55,7 +56,13 @@ class HomeScreen extends BaseScreen<HomeController> {
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               icon: Icon(Icons.attach_file_sharp),
-              onPressed: () {},
+              onPressed: () async {
+                final File? file = await controller.openFile();
+                if (file == null) return;
+
+                codeEditorController.inputCodeController.text =
+                    await file.readAsString();
+              },
             ),
             IconButton(
               hoverColor: Colors.transparent,
@@ -68,14 +75,15 @@ class HomeScreen extends BaseScreen<HomeController> {
               hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onPressed: () {},
+              onPressed: () =>
+                  controller.saveFile(codeEditorController.outputText),
               icon: Icon(Icons.save),
             ),
             IconButton(
               hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onPressed: () {},
+              onPressed: () => {},
               icon: Icon(Icons.cut),
             ),
             IconButton(
@@ -163,6 +171,8 @@ class HomeScreen extends BaseScreen<HomeController> {
                                           isDense: true,
                                           hintText: 'Class name',
                                         ),
+                                        controller:
+                                            controller.classNameController,
                                         style: Get.textTheme.bodyText1,
                                       ),
                                     )
@@ -198,6 +208,8 @@ class HomeScreen extends BaseScreen<HomeController> {
                                           isDense: true,
                                           hintText: 'Exe,bat file name',
                                         ),
+                                        controller:
+                                            controller.exeNameController,
                                         style: Get.textTheme.bodyText1,
                                       ),
                                     ),
@@ -208,7 +220,9 @@ class HomeScreen extends BaseScreen<HomeController> {
                           ),
                           SizedBox(width: Dimens.extraLargeWidthDimens),
                           ElevatedButton(
-                            onPressed: codeEditorController.buildSolution,
+                            onPressed: () => codeEditorController.buildSolution(
+                              controller.classNameController.text,
+                            ),
                             child: Text(
                               'Build Solution',
                               style: TextStyle(

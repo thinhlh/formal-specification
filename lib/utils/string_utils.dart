@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:formal_specification/utils/values.dart';
 
 class StringUtils {
@@ -46,5 +48,9 @@ ${Values.tabs}${Values.tabs}${Values.tabs}${Values.tabs}${assignee.replaceAll(Re
       buffer.write('\t');
     }
     return buffer.toString();
+  }
+
+  static String fileNameFromPath(String path) {
+    return path.split(Platform.pathSeparator).last;
   }
 }

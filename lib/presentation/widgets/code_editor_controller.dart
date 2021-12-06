@@ -11,9 +11,9 @@ import 'package:highlight/languages/dart.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CodeEditorController extends BaseController {
-  late final void Function(String)? onInputTextChange;
-  late final CodeController _inputCodeController;
-  late final CodeController _outputCodeController;
+  late void Function(String) onInputTextChange;
+  late CodeController _inputCodeController;
+  late CodeController _outputCodeController;
 
   void initCodeController() {
     // Instantiate the CodeController
@@ -45,6 +45,9 @@ class CodeEditorController extends BaseController {
             ),
       },
     );
+
+    // print(inputText.substring(_inputCodeController.selection.baseOffset,
+    //     inputCodeController.selection.extentOffset));
   }
 
   @override
@@ -60,9 +63,8 @@ class CodeEditorController extends BaseController {
   String get inputText => _inputCodeController.text;
   String get outputText => _outputCodeController.text;
 
-  void parsingFirstSolution() {
+  void generatingSolution() {
     _convertingToDart();
-    // _saveToFile().then((file) => CLIUtils.executeDartFile(file.path));
   }
 
   void _convertingToDart() {
@@ -74,17 +76,19 @@ class CodeEditorController extends BaseController {
     ).toDart();
   }
 
-  Future<File> _saveToFile() async {
-    final path = await getApplicationDocumentsDirectory();
-    final file = File('${path.path}/test.dart');
+  Future<File> _saveToFile(String filename) async {
+    final file = File(
+      await CLIUtils.basePath + Platform.pathSeparator + '$filename.dart',
+    );
 
     return file.writeAsString(
       _outputCodeController.text,
     );
   }
 
-  Future<void> buildSolution() async {
-    parsingFirstSolution();
-    _saveToFile().then((value) => CLIUtils.executeDartFile(value.path));
+  Future<void> buildSolution(String filename) async {
+    generatingSolution();
+    _saveToFile(filename)
+        .then((value) => CLIUtils.executeDartFile('$filename.dart'));
   }
 }

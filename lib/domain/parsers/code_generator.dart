@@ -79,10 +79,12 @@ ${input.generateCallFunction}
     final List<Argument> parameters = input.parameters;
     final Argument expectedResult = input.expectedResult;
 
+    print('ARGUMENT $expectedResult');
+
     String result = "";
     result += '${Values.tabs}${expectedResult.toDart()}';
     parameters.forEach((element) {
-      result += '\n${Values.tabs} ${element.toDart()}';
+      result += '\n${Values.tabs}${element.toDart()}';
     });
 
     return result;
