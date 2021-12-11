@@ -2,7 +2,7 @@
     package="com.example.formal_specification">
    <application
         android:label="formal_specification"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
