@@ -23,9 +23,9 @@ class SplashScreen extends BaseScreen<SplashController> {
           child: Text(
             'Formal Specification Coding Project',
             style: TextStyle(
-              color: AppColors.primary,
+              color: AppColors.primary.withRed(255),
               fontWeight: AppStyle.BOLD,
-              fontSize: 50,
+              fontSize: 52,
             ),
             textAlign: TextAlign.center,
           ),

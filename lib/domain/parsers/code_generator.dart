@@ -5,7 +5,7 @@ import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser1.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser2.dart';
 import 'package:formal_specification/domain/parsers/pre_condition_parser.dart';
-import 'package:formal_specification/utils/string_extension.dart';
+import 'package:formal_specification/helper/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 class CodeGenerator implements Language {
@@ -64,9 +64,9 @@ ${input.generateInputFunction(isType2)}
 
 ${input.generateValidationFunction(preCondition.generateValidation)}
 
-${input.generateSolveFunction(isType2 ? (postCondition as PostConditionParserType2).functionCallerName : postCondition.generateSolve, isType2)}
+${input.generateSolveFunction(isType2 ? (postCondition as PostConditionParserType2).functionCallerName : postCondition.toDart(), isType2)}
 
-${postCondition is PostConditionParserType2 ? postCondition.generateSolve : ''}
+${postCondition is PostConditionParserType2 ? postCondition.toDart() : ''}
 
 ${input.generateCallFunction}
 }

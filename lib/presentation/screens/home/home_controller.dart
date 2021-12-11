@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:formal_specification/base/base_controller.dart';
+import 'package:formal_specification/utils/colors.dart';
 import 'package:formal_specification/utils/dimens.dart';
-import 'package:formal_specification/utils/string_utils.dart';
+import 'package:formal_specification/helper/string_utils.dart';
 import 'package:formal_specification/utils/values.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,7 +57,7 @@ class HomeController extends BaseController {
         if (result.files.single.path != null) {
           File file = File(result.files.single.path!);
 
-// This will remove the file extenstion
+          // This will remove the file extenstion
           classNameController.text =
               StringUtils.fileNameFromPath(file.path).split('.').first;
           return file;
@@ -73,7 +74,8 @@ class HomeController extends BaseController {
   }
 
   void saveFile(String contents) async {
-    if (classNameController.text.isEmpty) {
+    if (classNameController.text.isEmpty ||
+        classNameController.text.contains('.')) {
       showAlertDialog(
         title: 'Invalid file name',
         message: 'File name must not be empty',
@@ -89,6 +91,14 @@ class HomeController extends BaseController {
       );
 
       await file.writeAsString(contents);
+      Get.showSnackbar(
+        GetBar(
+          title: 'Saved file successfully',
+          message: 'File name: ${classNameController.text}.dart',
+          isDismissible: true,
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -97,14 +107,36 @@ class HomeController extends BaseController {
     await Future.delayed(Duration(milliseconds: 1));
     showAlertDialog(
       title: 'Are you sure to exit the application?',
-      actions: <ElevatedButton>[
-        ElevatedButton(
-          onPressed: () => Get.back(),
-          child: Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: () => SystemNavigator.pop(),
-          child: Text('Exit'),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      EdgeInsets.symmetric(vertical: Dimens.largeHeightDimens),
+                    ),
+                    backgroundColor:
+                        MaterialStateProperty.all(AppColors.tetiaryColor)),
+                onPressed: () => Get.back(),
+                child: Text('Cancel'),
+              ),
+            ),
+            SizedBox(width: Dimens.mediumWidthDimens),
+            Expanded(
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(
+                    EdgeInsets.symmetric(vertical: Dimens.largeHeightDimens),
+                  ),
+                  backgroundColor: MaterialStateProperty.all(
+                      AppColors.secondary.withRed(255)),
+                ),
+                onPressed: () => SystemNavigator.pop(),
+                child: Text('Exit'),
+              ),
+            ),
+          ],
         ),
       ],
     );

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
-import 'package:formal_specification/utils/string_extension.dart';
+import 'package:formal_specification/helper/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 /// This class is used for post condition parser with 2nd types
@@ -142,7 +142,7 @@ ${Values.tabs}}
   /// [Condition]: This is a condition, used for the last loop
   /// [Argument]: This is a {String} that will be passed as arguments to the next loop
   @override
-  String get generateSolve {
+  String toDart() {
     String result = "";
     for (int i = 0; i < _ranges.length; i++) {
       result += generateLoop(

@@ -1,5 +1,5 @@
-import 'package:formal_specification/utils/string_extension.dart';
-import 'package:formal_specification/utils/string_utils.dart';
+import 'package:formal_specification/helper/string_extension.dart';
+import 'package:formal_specification/helper/string_utils.dart';
 
 class PreConditionParser {
   late final String _output;

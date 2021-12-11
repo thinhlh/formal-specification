@@ -1,6 +1,6 @@
 import 'package:formal_specification/domain/parsers/post_condition_parser.dart';
-import 'package:formal_specification/utils/string_extension.dart';
-import 'package:formal_specification/utils/string_utils.dart';
+import 'package:formal_specification/helper/string_extension.dart';
+import 'package:formal_specification/helper/string_utils.dart';
 
 /// This class contains a conditions map
 /// It is Map<List<String>,List<String>> type which indicate a list of <Condition,Assignee> tupple
@@ -66,7 +66,7 @@ class PostConditionParserType1 implements PostConditionParser {
   }
 
   @override
-  String get generateSolve {
+  String toDart() {
     String result = "";
     _statements.forEach((conditions, assignee) {
       result += "\n";

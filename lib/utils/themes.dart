@@ -11,5 +11,8 @@ class AppTheme {
     primaryColor: AppColors.primary,
     accentColor: AppColors.secondary,
     scaffoldBackgroundColor: AppColors.background,
+    iconTheme: IconThemeData(
+      color: AppColors.secondary,
+    ),
   );
 }

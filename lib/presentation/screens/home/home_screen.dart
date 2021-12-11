@@ -73,7 +73,7 @@ class HomeScreen extends BaseScreen<HomeController> {
             tooltip: 'Show file menu',
             itemBuilder: (_) => <PopupMenuEntry<dynamic>>[
               PopupMenuItem<dynamic>(
-                child: Text('New screen'),
+                child: Text('New test case'),
                 onTap: clearComposing,
               ),
               PopupMenuItem<dynamic>(
@@ -154,27 +154,38 @@ class HomeScreen extends BaseScreen<HomeController> {
           CustomIconButton(
             icon: Icons.post_add,
             onPressed: clearComposing,
+            tooltip: 'New test case',
           ),
           CustomIconButton(
             onPressed: openFile,
             icon: Icons.folder_open_rounded,
+            tooltip: 'Open file',
+            iconColor: AppColors.yellowPallete,
           ),
           CustomIconButton(
             onPressed: () =>
                 controller.saveFile(codeEditorController.outputText),
             icon: Icons.save,
+            tooltip: 'Save file',
+            iconColor: AppColors.onSurface,
           ),
           CustomIconButton(
             onPressed: codeEditorController.cut,
             icon: Icons.cut,
+            tooltip: 'Cut',
+            iconColor: AppColors.secondary,
           ),
           CustomIconButton(
             icon: Icons.file_copy,
             onPressed: codeEditorController.copy,
+            tooltip: 'Copy',
+            iconColor: AppColors.bluePallete,
           ),
           CustomIconButton(
             icon: Icons.paste,
             onPressed: codeEditorController.paste,
+            tooltip: 'Paste',
+            iconColor: AppColors.primary,
           ),
           Obx(
             () => CustomIconButton(
@@ -183,6 +194,7 @@ class HomeScreen extends BaseScreen<HomeController> {
                   ? AppColors.onSurface
                   : AppColors.disabledColor,
               onPressed: codeEditorController.undo,
+              tooltip: 'Undo',
             ),
           ),
           Obx(
@@ -192,6 +204,7 @@ class HomeScreen extends BaseScreen<HomeController> {
                   ? AppColors.onSurface
                   : AppColors.disabledColor,
               onPressed: codeEditorController.redo,
+              tooltip: 'Redo',
             ),
           ),
         ],
@@ -216,6 +229,7 @@ class HomeScreen extends BaseScreen<HomeController> {
                     flex: 3,
                     child: TextField(
                       decoration: InputDecoration(
+                        suffixText: '.dart',
                         fillColor: AppColors.light,
                         filled: true,
                         focusColor: AppColors.light,
@@ -270,6 +284,7 @@ class HomeScreen extends BaseScreen<HomeController> {
                         ),
                         isDense: true,
                         hintText: 'Exe,bat file name',
+                        suffixText: '.sh',
                       ),
                       controller: controller.exeNameController,
                       style: Get.textTheme.bodyText1,

@@ -1,4 +1,4 @@
-import 'package:formal_specification/utils/string_utils.dart';
+import 'package:formal_specification/helper/string_utils.dart';
 
 class Values {
   Values._();

@@ -1,11 +1,12 @@
 import 'package:formal_specification/domain/entity/argument.dart';
-import 'package:formal_specification/utils/string_extension.dart';
+import 'package:formal_specification/helper/string_extension.dart';
 import 'package:formal_specification/utils/values.dart';
 
 class InputParser {
   late final String functionName;
   late final Argument expectedResult;
   late List<Argument> parameters;
+
   InputParser({required String input}) {
     input = input.removeWhiteSpace();
 

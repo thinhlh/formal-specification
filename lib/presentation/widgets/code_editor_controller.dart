@@ -7,7 +7,7 @@ import 'package:flutter_highlight/themes/monokai-sublime.dart';
 import 'package:formal_specification/base/base_controller.dart';
 import 'package:formal_specification/domain/parsers/code_generator.dart';
 import 'package:formal_specification/data/text_history.dart';
-import 'package:formal_specification/utils/cli_utils.dart';
+import 'package:formal_specification/helper/cli_utils.dart';
 import 'package:formal_specification/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:highlight/languages/dart.dart';
@@ -109,17 +109,17 @@ class CodeEditorController extends BaseController {
 
   Future<void> buildSolution(String codeFileName, String exeFileName) async {
     generatingSolution();
-    if (codeFileName.isEmpty)
+    if (codeFileName.isEmpty || codeFileName.contains('.'))
       showAlertDialog(
         title: 'Invalid file name',
         message: 'File name must not be empty',
       );
     else
       _saveToFile(codeFileName)
-          .then((value) => CLIUtils.executeDartFile('$codeFileName.dart'));
+          .then((value) => CLIUtils.executeDartFile(codeFileName));
 
     if (exeFileName.isNotEmpty) {
-      CLIUtils.writeExecutableDartFile(exeFileName, '$codeFileName.dart');
+      CLIUtils.writeExecutableDartFile(exeFileName, codeFileName);
     }
   }
 
